@@ -5,9 +5,48 @@ let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
 
+
+const authenticatedUser = (username, password) => {
+    let validUser = users.filter((user) => {
+        return (user.username === username && user.password === password);
+    });
+    if(validUser.length > 0){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+const doesExist = (username) => {
+    let userWithSameName = users.filter((u) => {
+    return u.username === username});
+
+    if(userWithSameName.length > 0){
+        return true;
+    }
+    else {
+        return false
+    }
+}
+
+
+
+
 public_users.post("/register", (req,res) => {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    const userName = req.body.username;
+    const passWord = req.body.password;
+
+    if(userName && passWord){
+        if(!doesExist(userName)){
+            users.push({"username":userName, "password":passWord});
+                return res.status(200).json({message: "User successfully registered. Now you can login"});
+        }
+        else{
+            return res.status(404).json({message: "User already exists!"});
+        }
+    }
+
 });
 
 // Get the book list available in the shop
@@ -38,8 +77,13 @@ public_users.get('/author/:author',function (req, res) {
     const allBooks = Object.values(books);
     const bookShelf = allBooks.filter( (bk) =>
         (bk.author.toLowerCase() === authorName)
-   )
-    res.send(JSON.stringify(bookShelf,null,4));
+    )
+    if(bookShelf){
+        res.send(JSON.stringify(bookShelf,null,4));
+    }
+    else{
+        res.status(400).json({message:"Book not found"});
+    }
 
 });
 

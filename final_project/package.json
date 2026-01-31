@@ -15,5 +15,8 @@
     "express-session": "^1.17.3",
     "jsonwebtoken": "^8.5.1",
     "nodemon": "^2.0.19"
+  },
+  "devDependencies": {
+    "prettier": "^3.8.1"
   }
 }

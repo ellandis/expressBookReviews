@@ -46,6 +46,17 @@ public_users.post("/register", (req,res) => {
             return res.status(404).json({message: "User already exists!"});
         }
     }
+    else{
+        if(userName){
+            return res.send({message:"Password was not provided"});
+        }
+        else if(passWord){
+            return res.send({message:"Username was not provided"});
+        }
+        else{
+            return res.send({message:"Username and password was not provided"});
+        }
+    }
 
 });
 
@@ -69,7 +80,7 @@ public_users.get('/isbn/:isbn',function (req, res) {
         res.status(400).json({message:"Book not found"});
     }
  });
-  
+
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
   //Write your code here

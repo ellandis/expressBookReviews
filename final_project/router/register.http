@@ -4,4 +4,14 @@ Content-Type: application/json
 {
     "username": "user2",
     "password": "password2"
-}d
+}
+
+###
+
+POST http://localhost:8800/customer/login
+Content-Type: application/json
+
+{
+    "username": "john_doe",
+    "password": "securePassword123"
+}

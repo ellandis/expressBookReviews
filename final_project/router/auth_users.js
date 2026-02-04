@@ -7,7 +7,7 @@ let users = [];
 
 const isValid = (username)=>{ //returns boolean
 //write code to check is the username is valid
-    let foundUser = users.filter( (user) => return user.username === username);
+    let foundUser = users.filter( (user) => user.username === username);
     if(foundUser.length > 0){ return true;}
     else{ return false;}
 }
@@ -37,7 +37,13 @@ regd_users.post("/login", (req,res) => {
 
         req.session.authorization = {accessToken, userName};
 
-        return res.status(200).send("User successfully logged in");
+        return res.status(200).json({
+            success: true,
+            message: "User successfully registered. Now you can login",
+            user: userName,
+            timestamp: new Date(),
+            accessToken
+        });
     }
     else {
         return res.status(208).json({message: "Invalid Login. Check username and password"});
@@ -47,7 +53,29 @@ regd_users.post("/login", (req,res) => {
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    const isbn = req.params.isbn;
+    const username = req.session.authorization.userName;
+    const review = req.body.review;
+
+    if(!books[isbn]){
+        return res.status(404).json({message:"Book not found"});
+    }
+
+    let note = "";
+    if(books[isbn].reviews[username] === username){
+        note = `Review updated for ${username} on ${isbn}`
+    }
+    else{
+        note = `Review added for ${username} on ${isbn}`
+    }
+
+    books[isbn].reviews[username] = review;
+
+
+    return res.status(200).json({
+        message: note
+    });
+
 });
 
 module.exports.authenticated = regd_users;

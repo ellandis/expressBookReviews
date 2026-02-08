@@ -62,21 +62,35 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     }
 
     let note = "";
-    if(books[isbn].reviews[username] === username){
-        note = `Review updated for ${username} on ${isbn}`
+    if(books[isbn].reviews[username] === username.username){
+        note = `Review ADDED by ${username} on book ${isbn}`
     }
     else{
-        note = `Review added for ${username} on ${isbn}`
+        note = `Review UPDATED by ${username} on book ${isbn}`
     }
 
     books[isbn].reviews[username] = review;
 
-
     return res.status(200).json({
         message: note
     });
+});
+
+
+regd_users.delete("/auth/review/:isbn", (req,res) => {
+
+    const isbn = req.params.isbn;
+    const username = req.session.authorization.userName;
+
+    if(books[isbn].reviews[username]){
+        delete books[isbn].reviews[username];
+        return res.status(200).json({message: "Review deleted successfully"});
+    }else {
+        return res.status(404).json({ message: "You have no review to delete for this book" });
+    }
 
 });
+
 
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;

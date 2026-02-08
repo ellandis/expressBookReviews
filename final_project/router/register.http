@@ -1,43 +1,184 @@
+### ============================================
+### SCENARIO: 5 Users Register, Login, Review
+### Book ID: 1 (used throughout)
+### ============================================
+
+# @no-log
+
+
+### --- USER 1: Registration ---
 POST http://localhost:8000/register
 Content-Type: application/json
 
 {
-    "username": "user2",
-    "password": "password2"
+    "username": "alice_reader",
+    "password": "password123"
 }
 
-###
-
+### --- USER 1: Login ---
 POST http://localhost:8000/customer/login
 Content-Type: application/json
 
 {
-    "username": "user2",
-    "password": "password2"
+    "username": "alice_reader",
+    "password": "password123"
 }
 
-###
-
-
+### --- USER 1: Add Review ---
 PUT http://localhost:8000/customer/auth/review/1
 Content-Type: application/json
 
 {
-    "review" : "new review by me"
+    "review": "Absolutely captivating! The plot twists kept me on the edge of my seat. A must-read for mystery lovers."
 }
 
 ###
 
+### --- USER 2: Registration ---
+POST http://localhost:8000/register
+Content-Type: application/json
+
+{
+    "username": "bob_bookworm",
+    "password": "securepass456"
+}
+
+### --- USER 2: Login ---
+POST http://localhost:8000/customer/login
+Content-Type: application/json
+
+{
+    "username": "bob_bookworm",
+    "password": "securepass456"
+}
+
+### --- USER 2: Add Review ---
 PUT http://localhost:8000/customer/auth/review/1
 Content-Type: application/json
 
 {
-    "review" : "new review by me2"
+    "review": "Well-written and engaging. The character development was superb, though the pacing dragged a bit in the middle."
 }
-
 
 ###
 
+### --- USER 3: Registration ---
+POST http://localhost:8000/register
+Content-Type: application/json
+
+{
+    "username": "carol_critic",
+    "password": "mypass789"
+}
+
+### --- USER 3: Login ---
+POST http://localhost:8000/customer/login
+Content-Type: application/json
+
+{
+    "username": "carol_critic",
+    "password": "mypass789"
+}
+
+### --- USER 3: Add Review ---
+PUT http://localhost:8000/customer/auth/review/1
+Content-Type: application/json
+
+{
+    "review": "A literary masterpiece! The author's prose is beautiful and the themes are thought-provoking. 5/5 stars."
+}
+
+###
+
+### --- USER 4: Registration ---
+POST http://localhost:8000/register
+Content-Type: application/json
+
+{
+    "username": "david_novelist",
+    "password": "david2024"
+}
+
+### --- USER 4: Login ---
+POST http://localhost:8000/customer/login
+Content-Type: application/json
+
+{
+    "username": "david_novelist",
+    "password": "david2024"
+}
+
+### --- USER 4: Add Review ---
+PUT http://localhost:8000/customer/auth/review/1
+Content-Type: application/json
+
+{
+    "review": "Disappointed. The hype didn't match reality. Predictable storyline and shallow characters. Not recommended."
+}
+
+###
+
+### --- USER 5: Registration ---
+POST http://localhost:8000/register
+Content-Type: application/json
+
+{
+    "username": "emma_enthusiast",
+    "password": "booklov3r"
+}
+
+### --- USER 5: Login ---
+POST http://localhost:8000/customer/login
+Content-Type: application/json
+
+{
+    "username": "emma_enthusiast",
+    "password": "booklov3r"
+}
+
+### --- USER 5: Add Review ---
+PUT http://localhost:8000/customer/auth/review/1
+Content-Type: application/json
+
+{
+    "review": "Decent read for a rainy afternoon. Nothing groundbreaking but enjoyable enough to finish."
+}
+
+###
+
+### ============================================
+### CHECK ALL REVIEWS
+### ============================================
 
 GET http://localhost:8000/review/1
 Content-Type: application/json
+
+###
+
+### ============================================
+### USER 3 CHANGES MIND: Delete Review
+### ============================================
+
+### --- USER 3: Login Again ---
+POST http://localhost:8000/customer/login
+Content-Type: application/json
+
+{
+    "username": "carol_critic",
+    "password": "mypass789"
+}
+
+### --- USER 3: Delete Review ---
+DELETE http://localhost:8000/customer/auth/review/1
+Content-Type: application/json
+
+###
+
+### ============================================
+### CHECK REVIEWS AFTER DELETION
+### ============================================
+
+GET http://localhost:8000/review/1
+Content-Type: application/json
+
+###

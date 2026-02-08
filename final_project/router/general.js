@@ -114,7 +114,7 @@ public_users.get('/review/:isbn',function (req, res) {
   //Write your code here
   const isbn = req.params.isbn;
   const book = books[isbn];
-  const review = book.reviews;
+  const review = book["reviews"];
 
   res.send(JSON.stringify(review,null,4));
 });

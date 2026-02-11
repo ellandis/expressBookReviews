@@ -80,6 +80,28 @@ function getBooksByAuthor(authorName){
         });
     }
 
+function getBooksByTitle(titleName){
+    return new Promise((resolve,reject) => {
+       try{
+        const booksByTitle = [];
+
+        for(let isbn in books){
+            if(books[isbn].title.toLowerCase() === titleName.toLowerCase()){
+                booksByTitle.push({
+                    isbn: isbn,
+                    ...books[isbn]
+                });
+            }
+        }
+        resolve(booksByTitle);
+       }
+       catch(error){
+            reject(error);
+       }
+
+    });
+}
+
 
 
 public_users.post("/register", async (req,res) => {
@@ -159,14 +181,21 @@ public_users.get('/author/:author',async (req, res) => {
 });
 
 // Get all books based on title
-public_users.get('/title/:title',function (req, res) {
-  //Write your code here
-    const titleName = req.params.title.toLowerCase();
-    const allBooks = Object.values(books);
-    const shelf = allBooks.filter((bk) =>
-        (bk.title.toLowerCase() === titleName)
-    )
-    res.send(JSON.stringify(shelf,null,4));
+public_users.get('/title/:title', async (req, res) => {
+    try{
+        const titleName = req.params.title.toLowerCase();
+        const allBooks = await getBooksByTitle(titleName);
+
+        if(!allBooks || allBooks.length === 0){
+            return res.status(404).json({message:"No books found by that title."})
+        }
+
+        return res.status(200).send(JSON.stringify(allBooks,null,4));
+    }
+    catch(error){
+        res.status(500).json({message:"Book not found", error: error.message});
+
+    }
 });
 
 //  Get book review

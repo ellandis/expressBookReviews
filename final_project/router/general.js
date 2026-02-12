@@ -5,6 +5,13 @@ let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
 
+
+/*
+**********************************************
+helper functions
+**********************************************
+*/
+
 const authenticatedUser = (username, password) => {
     let validUser = users.filter((user) => {
         return (user.username === username && user.password === password);
@@ -102,7 +109,9 @@ function getBooksByTitle(titleName){
     });
 }
 
-
+/*************
+********API FUNCTIONS***********
+**********/
 
 public_users.post("/register", async (req,res) => {
   //Write your code here
@@ -120,7 +129,7 @@ public_users.post("/register", async (req,res) => {
         return res.status(409).json({message: "User already exist"});
         }
 
-        await createUser({userName,passWord});
+        await createUser({username: userName, password: passWord});
         return res.status(201).json({message:"User successfully register. Now you can login"});
     }
     catch(error){
@@ -207,15 +216,6 @@ public_users.get('/review/:isbn',function (req, res) {
 
   res.send(JSON.stringify(review,null,4));
 });
-
-
-
-/*
-**********************************************
-helper functions
-**********************************************
-*/
-
 
 
 module.exports.general = public_users;

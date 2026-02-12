@@ -24,29 +24,28 @@ const authenticatedUser = (username, password) => {
 }
 
 //only registered users can login
-regd_users.post("/login", (req,res) => {
-    const userName = req.body.username;
+regd_users.post("/login", (req, res) => {
+    const username = req.body.username;
     const passWord = req.body.password;
 
-    if(!userName || !passWord){return res.status(404).json({message:"Error logging in"});}
+    if (!username || !passWord) {
+        return res.status(400).json({message: "Username and password required"});
+    }
 
-    if(authenticatedUser(userName,passWord)){
+    if (authenticatedUser(username, passWord)) {
         let accessToken = jwt.sign({
-            data: passWord,
-        }, 'access',{expiresIn: 60 * 60});
+            data: username  // Use username, not password
+        }, 'access', {expiresIn: 60 * 60});
 
-        req.session.authorization = {accessToken, userName};
+        req.session.authorization = {accessToken, username};
 
         return res.status(200).json({
-            success: true,
-            message: "User successfully registered. Now you can login",
-            user: userName,
-            timestamp: new Date(),
-            accessToken
+            message: "User successfully logged in",
+            user: username,
+            timestamp: new Date()
         });
-    }
-    else {
-        return res.status(208).json({message: "Invalid Login. Check username and password"});
+    } else {
+        return res.status(401).json({message: "Invalid Login. Check username and password"});
     }
 });
 
@@ -54,7 +53,7 @@ regd_users.post("/login", (req,res) => {
 regd_users.put("/auth/review/:isbn", (req, res) => {
   //Write your code here
     const isbn = req.params.isbn;
-    const username = req.session.authorization.userName;
+    const username = req.session.authorization.username;
     const review = req.body.review;
 
     if(!books[isbn]){
@@ -80,7 +79,7 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
 regd_users.delete("/auth/review/:isbn", (req,res) => {
 
     const isbn = req.params.isbn;
-    const username = req.session.authorization.userName;
+    const username = req.session.authorization.username;
 
     if(books[isbn].reviews[username]){
         delete books[isbn].reviews[username];

@@ -15,10 +15,12 @@ GET http://localhost:8000/isbn/3
 Content-Type: application/json
 
 ###
+
 GET http://localhost:8000/author/Hans%20Christian%20Andersen
 Content-Type: application/json
 
 ###
+
 GET http://localhost:8000/title/Fairy%20tales
 
 ### --- USER 1: Registration ---

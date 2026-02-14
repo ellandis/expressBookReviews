@@ -72,7 +72,6 @@ const getBooks = async () => {
 async function getBooksByAuthor(authorName){
         try{
             const response = await axios.get(`http://localhost:8000/books/${authorName}`);
-            console.log(response.data);
             return response.data;
         }
         catch(error){
@@ -80,27 +79,15 @@ async function getBooksByAuthor(authorName){
         }
     }
 
-function getBooksByTitle(titleName){
-    return new Promise((resolve,reject) => {
-       try{
-        const booksByTitle = [];
-
-        for(let isbn in books){
-            if(books[isbn].title.toLowerCase() === titleName.toLowerCase()){
-                booksByTitle.push({
-                    isbn: isbn,
-                    ...books[isbn]
-                });
-            }
+async function getBooksByTitle(titleName){
+        try{
+            const response = await axios.get(`http://localhost:8000/books/title/${titleName}`);
+            return response.data;
         }
-        resolve(booksByTitle);
-       }
-       catch(error){
-            reject(error);
-       }
-
-    });
-}
+        catch(error){
+            throw new Error("Book not found");
+        }
+    }
 
 /*******************************
 API ENDPOINT HELPERS => AXIOS
@@ -137,6 +124,20 @@ public_users.get('/author/:author',(req,res) => {
             return res.status(404).json({message: "No books found for this author"})
         }
     return res.status(200).json(booksByAuthor);
+});
+
+public_users.get('/title/:title', (req,res) => {
+    const bookName = req.params.title;
+    const titleName = req.params.title;
+    for(let isbn in books){
+            if(books[isbn].title.toLowerCase() === titleName.toLowerCase()){
+                return res.status(200).json({
+                    isbn: isbn,
+                    ...books[isbn]
+                });
+            }
+        }
+    return res.status(404).json({message: "Book not found"});
 });
 
 
@@ -222,18 +223,16 @@ public_users.get('/author/:author',async (req, res) => {
 //next
 public_users.get('/title/:title', async (req, res) => {
     try{
-        const titleName = req.params.title.toLowerCase();
+        const titleName = req.params.title;
         const allBooks = await getBooksByTitle(titleName);
 
         if(!allBooks || allBooks.length === 0){
             return res.status(404).json({message:"No books found by that title."})
         }
-
         return res.status(200).send(JSON.stringify(allBooks,null,4));
     }
     catch(error){
         res.status(500).json({message:"Book not found", error: error.message});
-
     }
 });
 
